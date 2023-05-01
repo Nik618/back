@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
 @Entity
+@Table(name="users")
 class UserEntity {
 
     @Id
@@ -23,5 +24,8 @@ class UserEntity {
     var refreshToken: String? = null
 
     var role: String? = null
+
+    @OneToMany(mappedBy="user")
+    var ordersDto: List<OrderEntity>? = null
 
 }

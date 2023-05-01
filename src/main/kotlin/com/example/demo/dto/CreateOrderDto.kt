@@ -4,7 +4,8 @@ import com.example.demo.dto.enums.RoleEnum
 
 data class CreateOrderDto (
         val description: String? = null,
-        var photo: ByteArray? = null
+        var photo: ByteArray? = null,
+        var user: String? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

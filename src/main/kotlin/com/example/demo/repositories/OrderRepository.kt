@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface OrderRepository: CrudRepository<OrderEntity, Int> {
 
-    fun findAllById(id: Int) : List<OrderEntity>
+    fun findAllByUser(user: UserEntity) : List<OrderEntity>
+
 
 }

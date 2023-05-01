@@ -6,5 +6,5 @@ data class UserDto (
         val login: String? = null,
         val password: String? = null,
         val name: String? = null,
-        var role: RoleEnum? = null
+        var roles: Set<RoleEnum>? = null
 )

@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
 @Entity
+@Table(name="orders")
 class OrderEntity {
 
     @Id
@@ -15,5 +16,15 @@ class OrderEntity {
     var description: String? = null
 
     var photo: ByteArray? = null
+
+    var status: String? = null
+
+    var price: String? = null
+
+    var track: String? = null
+
+    @ManyToOne
+    @JoinColumn(name="users_id", nullable=false)
+    var user: UserEntity? = null
 
 }

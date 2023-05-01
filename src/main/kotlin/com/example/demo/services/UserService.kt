@@ -17,7 +17,7 @@ class UserService(
         val userEntities = userRepository.findAllByUsername(login)
         val users = mutableListOf<UserDto>()
         userEntities.forEach {
-            users.add(UserDto(it.username, it.password, it.name, RoleEnum.valueOf(it.role!!)))
+            users.add(UserDto(it.username, it.password, it.name, setOf(RoleEnum.valueOf(it.role!!))))
         }
         return users.stream()
                 .filter(Predicate<UserDto> { user: UserDto -> login == user.login })

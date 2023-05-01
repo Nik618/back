@@ -1,15 +1,14 @@
 package com.example.demo.components
 
+import com.example.demo.dto.enums.RoleEnum
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.GrantedAuthority
-
-
 
 
 class JwtAuthentication : Authentication {
     private var authenticated = false
-    private val username: String? = null
-    private val firstName: String? = null
+    private var username: String? = null
+    private var firstName: String? = null
+    private var roles: Set<RoleEnum>? = null
 
     override fun getCredentials(): Any? {
         return null
@@ -36,8 +35,25 @@ class JwtAuthentication : Authentication {
         return firstName
     }
 
-    override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        TODO("Not yet implemented")
+    fun setRoles(roles: ArrayList<String>) {
+        val setRoles: MutableSet<RoleEnum> = mutableSetOf()
+        for (role in roles) {
+            setRoles.add(RoleEnum.valueOf(role))
+        }
+
+        this.roles = setRoles
+    }
+
+    fun setUsername(username: String) {
+        this.username = username
+    }
+
+    fun setFirstName(firstName: String) {
+        this.firstName = firstName
+    }
+
+    override fun getAuthorities(): Set<RoleEnum>? {
+        return roles
     }
 
 }

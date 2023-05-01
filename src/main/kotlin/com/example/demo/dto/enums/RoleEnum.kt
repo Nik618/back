@@ -1,14 +1,15 @@
 package com.example.demo.dto.enums
 
+import lombok.RequiredArgsConstructor
 import org.springframework.security.core.GrantedAuthority
 
-enum class RoleEnum(s: String) : GrantedAuthority {
+@RequiredArgsConstructor
+enum class RoleEnum : GrantedAuthority {
 
-    ADMIN("ADMIN"),
-    USER("USER");
+    ADMIN,
+    USER;
 
-    private val value: String? = null
     override fun getAuthority(): String {
-        return value!!
+        return name
     }
 }

@@ -31,8 +31,8 @@ class JwtProviderComponent(
                 .setSubject(user.login)
                 .setExpiration(accessExpiration)
                 .signWith(SignatureAlgorithm.HS512, jwtAccessSecret)
-                .claim("role", user.role)
                 .claim("name", user.name)
+                .claim("roles", user.roles)
                 .compact()
     }
 
@@ -44,6 +44,8 @@ class JwtProviderComponent(
                 .setSubject(user.login)
                 .setExpiration(refreshExpiration)
                 .signWith(SignatureAlgorithm.HS512, jwtRefreshSecret)
+                .claim("name", user.name)
+                .claim("roles", user.roles)
                 .compact()
     }
 
