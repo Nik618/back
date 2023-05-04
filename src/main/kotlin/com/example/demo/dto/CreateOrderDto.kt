@@ -1,10 +1,14 @@
 package com.example.demo.dto
 
 import com.example.demo.dto.enums.RoleEnum
+import java.security.cert.Extension
 
 data class CreateOrderDto (
         val description: String? = null,
         var photo: ByteArray? = null,
+        var file: ByteArray? = null,
+        var extension: String? = null,
+        var mimeType: String? = null,
         var user: String? = null
 ) {
     override fun equals(other: Any?): Boolean {
@@ -18,6 +22,11 @@ data class CreateOrderDto (
             if (other.photo == null) return false
             if (!photo.contentEquals(other.photo)) return false
         } else if (other.photo != null) return false
+        if (file != null) {
+            if (other.file == null) return false
+            if (!file.contentEquals(other.file)) return false
+        } else if (other.file != null) return false
+        if (user != other.user) return false
 
         return true
     }
@@ -25,6 +34,8 @@ data class CreateOrderDto (
     override fun hashCode(): Int {
         var result = description?.hashCode() ?: 0
         result = 31 * result + (photo?.contentHashCode() ?: 0)
+        result = 31 * result + (file?.contentHashCode() ?: 0)
+        result = 31 * result + (user?.hashCode() ?: 0)
         return result
     }
 }

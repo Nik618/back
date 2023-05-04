@@ -1,12 +1,18 @@
 package com.example.demo.dto
 
+import java.security.cert.Extension
+
 data class OrderDto(
         val id: Int? = null,
         val description: String? = null,
         val photo: ByteArray? = null,
+        val file: ByteArray? = null,
+        var extension: String? = null,
+        var mimeType: String? = null,
         val status: String? = null,
         val price: String? = null,
-        val track: String? = null
+        val track: String? = null,
+        val paymentAddress: String? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

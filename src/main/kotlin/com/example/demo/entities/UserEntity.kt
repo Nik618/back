@@ -19,7 +19,7 @@ class UserEntity {
 
     var name: String? = null
 
-    val accessToken: String? = null
+    var accessToken: String? = null
 
     var refreshToken: String? = null
 

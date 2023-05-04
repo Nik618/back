@@ -17,11 +17,19 @@ class OrderEntity {
 
     var photo: ByteArray? = null
 
+    var file: ByteArray? = null
+
+    var extension: String? = null
+
+    var mimeType: String? = null
+
     var status: String? = null
 
     var price: String? = null
 
     var track: String? = null
+
+    var paymentAddress: String? = null
 
     @ManyToOne
     @JoinColumn(name="users_id", nullable=false)

@@ -49,6 +49,7 @@ class AuthService(
                 val refreshTokenNew = jwtProviderComponent.generateRefreshToken(user)
                 val userEntity = userRepository.findByUsername(user.login!!)
                 userEntity.refreshToken = refreshTokenNew
+                userEntity.accessToken = accessToken
                 userRepository.save(userEntity)
                 return JwtResponseDto("Bearer", accessToken, refreshTokenNew)
             }
