@@ -15,10 +15,10 @@ class ScheduleService(
 
     @Scheduled(fixedRate = 100000)
     private fun test() {
-        logger.info { "Getting users..." }
-        userRepository.findAll().forEach {
-            logger.info { "->> user id: ${it.id}, login: ${it.username}" }
-        }
+//        logger.info { "Getting users..." }
+//        userRepository.findAll().forEach {
+//            logger.info { "->> user id: ${it.id}, login: ${it.username}" }
+//        }
 
     }
 }

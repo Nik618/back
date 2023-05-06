@@ -1,31 +1,31 @@
 package com.example.demo.entities
 
 import com.example.demo.dto.enums.RoleEnum
+import org.hibernate.criterion.Order
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
 @Entity
-@Table(name="users")
-class UserEntity {
+@Table(name="videos")
+class VideoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int? = null
 
-    var username: String? = null
+    var cameraId: String? = null
 
-    var password: String? = null
+    var pathId: String? = null
 
-    var name: String? = null
+    var pid: Long? = null
 
-    var accessToken: String? = null
+    var path: String? = null
 
-    var refreshToken: String? = null
+    @OneToOne
+    @JoinColumn(name="orders_id", nullable=false)
+    var order: OrderEntity? = null
 
-    var role: String? = null
 
-    @OneToMany(mappedBy="user")
-    var orders: List<OrderEntity>? = null
 
 }

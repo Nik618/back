@@ -35,4 +35,7 @@ class OrderEntity {
     @JoinColumn(name="users_id", nullable=false)
     var user: UserEntity? = null
 
+    @OneToOne(mappedBy="order")
+    var video: VideoEntity? = null
+
 }
