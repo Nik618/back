@@ -1,14 +1,12 @@
 package com.example.demo.dto
 
-import com.example.demo.dto.enums.RoleEnum
-import java.security.cert.Extension
-
 data class CreateOrderDto (
         val description: String? = null,
         var photo: ByteArray? = null,
         var file: ByteArray? = null,
         var extension: String? = null,
         var mimeType: String? = null,
+        val address: String? = null,
         var user: String? = null
 ) {
     override fun equals(other: Any?): Boolean {

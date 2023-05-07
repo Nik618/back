@@ -15,13 +15,8 @@ class OrderEntity {
 
     var description: String? = null
 
-    var photo: ByteArray? = null
-
-    var file: ByteArray? = null
-
-    var extension: String? = null
-
-    var mimeType: String? = null
+    @OneToOne(mappedBy="order")
+    var photo: PhotoEntity? = null
 
     var status: String? = null
 
@@ -31,11 +26,16 @@ class OrderEntity {
 
     var paymentAddress: String? = null
 
+    var address: String? = null
+
     @ManyToOne
     @JoinColumn(name="users_id", nullable=false)
     var user: UserEntity? = null
 
     @OneToOne(mappedBy="order")
     var video: VideoEntity? = null
+
+    @OneToOne(mappedBy="order")
+    var model: ModelEntity? = null
 
 }

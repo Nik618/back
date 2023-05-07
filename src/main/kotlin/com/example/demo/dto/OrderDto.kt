@@ -12,6 +12,7 @@ data class OrderDto(
         val status: String? = null,
         val price: String? = null,
         val track: String? = null,
+        val address: String? = null,
         val paymentAddress: String? = null
 ) {
     override fun equals(other: Any?): Boolean {

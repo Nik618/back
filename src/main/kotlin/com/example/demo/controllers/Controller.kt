@@ -6,11 +6,11 @@ import com.example.demo.dto.yookassa.request.Confirmation
 import com.example.demo.dto.yookassa.request.PaymentMethodData
 import com.example.demo.dto.yookassa.request.YooKassaRequest
 import com.example.demo.dto.yookassa.response.YooKassaResponse
+import com.example.demo.entities.ModelEntity
 import com.example.demo.entities.OrderEntity
+import com.example.demo.entities.PhotoEntity
 import com.example.demo.entities.VideoEntity
-import com.example.demo.repositories.OrderRepository
-import com.example.demo.repositories.UserRepository
-import com.example.demo.repositories.VideoRepository
+import com.example.demo.repositories.*
 import com.example.demo.services.AuthService
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.gson.Gson
@@ -38,6 +38,8 @@ class Controller(
         private val orderRepository: OrderRepository,
         private val userRepository: UserRepository,
         private val videoRepository: VideoRepository,
+        private val modelRepository: ModelRepository,
+        private val photoRepository: PhotoRepository,
         private val mapper: ObjectMapper
 ) {
 
@@ -55,16 +57,37 @@ class Controller(
 
 
     @PostMapping("create/order")
-    fun createOrder(@RequestBody order: CreateOrderDto): ResponseEntity<String?>? {
-        orderRepository.save(OrderEntity().apply {
-            description = order.description
-            photo = order.photo
-            file = order.file
-            extension = order.extension
-            mimeType = order.mimeType
+    fun createOrder(@RequestBody orderDto: CreateOrderDto): ResponseEntity<String?>? {
+
+        val orderEntity = orderRepository.save(OrderEntity().apply {
+            description = orderDto.description
             status = "NEW"
-            user = userRepository.findByUsername(order.user!!)
+            address = orderDto.address
+            user = userRepository.findByUsername(orderDto.user!!)
         })
+        while (orderEntity == null) {
+        }
+        val photoEntity = photoRepository.save(
+                PhotoEntity().apply {
+                    photo = orderDto.photo
+                    order = orderEntity
+                }
+        )
+        val modelEntity = modelRepository.save(
+                ModelEntity().apply {
+                    file = orderDto.file
+                    extension = orderDto.extension
+                    mimeType = orderDto.mimeType
+                    order = orderEntity
+                })
+        while (photoEntity == null || modelEntity == null) {
+        }
+        orderRepository.save(orderEntity.apply {
+            photo = photoEntity
+            model = modelEntity
+        })
+
+
         return ResponseEntity.ok("Hello admin")
     }
 
@@ -72,11 +95,11 @@ class Controller(
     @GetMapping("get/file")
     fun getFile(@RequestParam id: Int): String? {
         println("get/file")
-        val orderEntity = orderRepository.findById(id).get()
+        val modelEntity = orderRepository.findById(id).get().model!!
         val orderDto = OrderDto(
-                file = orderEntity.file,
-                extension = orderEntity.extension,
-                mimeType = orderEntity.mimeType
+                file = modelEntity.file,
+                extension = modelEntity.extension,
+                mimeType = modelEntity.mimeType
         )
         return Gson().toJson(orderDto)
     }
@@ -183,7 +206,7 @@ class Controller(
         val ordersDto = OrdersDto()
         val listOrders = if (user == "") orderRepository.findAll() else orderRepository.findAllByUser(userRepository.findByUsername(user))
         listOrders.forEach {
-            val originalImage: BufferedImage = ImageIO.read(it.photo!!.inputStream())
+            val originalImage: BufferedImage = ImageIO.read(it.photo!!.photo!!.inputStream())
             val resizedImage = BufferedImage(50, 50, originalImage.type)
             val g = resizedImage.createGraphics()
             g.drawImage(originalImage, 0, 0, 50, 50, null)
@@ -191,7 +214,7 @@ class Controller(
             val baos = ByteArrayOutputStream()
             ImageIO.write(resizedImage, "jpg", baos)
             val bytes = baos.toByteArray()
-            ordersDto.orders!!.add(OrderDto(it.id, it.description!!, bytes, null, null, null, it.status, it.price, it.track, it.paymentAddress))
+            ordersDto.orders!!.add(OrderDto(it.id, it.description!!, bytes, null, null, null, it.status, it.price, it.track, it.address, it.paymentAddress))
         }
         return Gson().toJson(ordersDto)
     }
@@ -203,7 +226,8 @@ class Controller(
                 status = order.status,
                 price = order.price,
                 track = order.track,
-                paymentAddress = order.paymentAddress
+                paymentAddress = order.paymentAddress,
+                address = order.address
         )
         return Gson().toJson(orderDto)
     }
@@ -221,7 +245,7 @@ class Controller(
     fun getPhoto(@RequestParam id: Int): String? {
         val order = orderRepository.findById(id).get()
 
-        return Gson().toJson(OrderDto(photo = order.photo))
+        return Gson().toJson(OrderDto(photo = order.photo!!.photo))
     }
 
     @PostMapping("set/price")
@@ -288,7 +312,10 @@ class Controller(
     @GetMapping("del/order")
     fun delOrder(@RequestParam id: Int): String {
         println("del/order")
-        orderRepository.delete(orderRepository.findById(id).get())
+        val orderEntity = orderRepository.findById(id).get()
+        modelRepository.delete(orderEntity.model!!)
+        photoRepository.delete(orderEntity.photo!!)
+        orderRepository.delete(orderEntity)
         println("del/order done")
         return Gson().toJson(ResultDto(
                 status = "success"
